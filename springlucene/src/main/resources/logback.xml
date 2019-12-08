@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 引入配置文件中的变量 logback.properties 定义了一个值log_path-->
+    <!--<property resource="logback.properties" />-->
+
+    <!-- 自己声明一个变量 -->
+    <!-- <property name="log_path" value="${catalina.home}" /> -->
+
+
+    <!-- 控制台输出 -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 按分钟时间滚动输出 level为 INFO 日志 -->
+    <!--<appender name="file—debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log_path}/logs/debug.log</File>
+        &lt;!&ndash;控制台只输出level级别的信息（onMatch），其他的直接拒绝（onMismatch） &ndash;&gt;
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY </onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log_path}/logs/debug.%d{yyyy-MM-dd_HH-mm}.log</FileNamePattern>
+            &lt;!&ndash; 保留的归档文件的最大数量，超出数量就删除旧文件，此处是按分钟滚动，30则代表30分钟 &ndash;&gt;
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+        </encoder>
+    </appender>-->
+
+    <!-- 特定过滤含有某字符串的日志 -->
+    <!--<appender name="file-str" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log_path}/logs/contains.log</File>
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                &lt;!&ndash; 日志信息中需要包含指定的字符串 &ndash;&gt;
+                <expression>message.contains("abc")</expression>
+            </evaluator>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log_path}/logs/contains.%d{yyyy-MM-dd}.log </FileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+        </encoder>
+    </appender>-->
+
+    <!-- 按照每天和每个日志文件大小生成日志文件 -->
+    <!--<appender name="audioDist"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log_path}/logs/audioDist.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            &lt;!&ndash;日志文件输出的文件名&ndash;&gt;
+            <FileNamePattern>${log_path}/logs/audioDist.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            &lt;!&ndash;日志文件保留天数&ndash;&gt;
+            <MaxHistory>30</MaxHistory>
+            &lt;!&ndash; 单个日志文件的大小 单位KB,MB,GB &ndash;&gt;
+            <maxFileSize>1KB</maxFileSize>
+            &lt;!&ndash; 所有日志文件的总大小空间。当日志文件的空间超过了设置的最大空间数量，就会删除旧的文件。注意：这个标签必须和maxHistory标签一起使用。 &ndash;&gt;
+            <totalSizeCap>10MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            &lt;!&ndash;格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符&ndash;&gt;
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>-->
+
+    <!-- 指定包输出指定级别日志 -->
+    <!--<logger name="com.gavin">
+        <level value="warn" />
+    </logger>-->
+
+    <root level="DEBUG">
+        <appender-ref ref="stdout" />
+        <!-- <appender-ref ref="audioDist"/>
+         <appender-ref ref="file—debug"/>
+         <appender-ref ref="file-str"/>-->
+    </root>
+</configuration>

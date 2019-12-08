@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd">
+
+    <context:component-scan base-package="com.lucene.test.dao,com.lucene.test.service,com.lucene.test.config">
+
+    </context:component-scan>
+
+    <!--加载数据源的配置文件-->
+    <context:property-placeholder location="classpath:datasource.properties" />
+    <!--数据源配置-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" p:driverClassName="${driverClassName}" p:url="${url}">
+        <property name="username" value="${user-name}"></property>
+        <property name="password" value="${user-password}"></property>
+        <property name="initialSize" value="${initialSize}"></property>
+        <property name="minIdle" value="${minIdle}"></property>
+        <property name="maxActive" value="${maxActive}"></property>
+        <property name="testOnBorrow" value="${testOnBorrow}"></property>
+        <property name="maxWait" value="${maxWait}"></property>
+        <property name="filters" value="config"></property>
+        <property name="connectionProperties" value="config.decrypt=true;config.decrypt.key=${public-key}"></property>
+    </bean>
+
+    <!--配置事务管理器-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+
+    <!--事务属性配置-->
+    <tx:advice transaction-manager="dataSourceTransactionManager" id="txAdvice">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="select*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--事务aop切面配置-->
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="transactionPointcut" expression="execution(* com.lucene.test.service..*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="transactionPointcut"></aop:advisor>
+    </aop:config>
+
+    <!--开启基于注解的事务配置-->
+    <tx:annotation-driven transaction-manager="dataSourceTransactionManager" proxy-target-class="true"></tx:annotation-driven>
+
+    <!--mybatis配置-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"></property>
+        <property name="mapperLocations" value="classpath:mybatis/mapper/*.xml"></property>
+    </bean>
+    <mybatis:scan base-package="com.lucene.test.dao"></mybatis:scan>
+
+
+
+</beans>
